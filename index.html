@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Агентство «Профессиональный Душнила» — Оформить выездную тоску</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        paper: '#F2EDE4',
+                        'paper-dark': '#E5DDD0',
+                        ink: '#1A1410',
+                        'ink-light': '#4A3F34',
+                        dust: '#8C7E6F',
+                        stamp: '#8B2500',
+                        'stamp-light': '#B53D1A',
+                        card: '#EAE2D6',
+                        'card-hover': '#E0D6C8',
+                        line: '#C9BDA8',
+                    },
+                    fontFamily: {
+                        display: ['Georgia', '"Times New Roman"', 'serif'],
+                        mono: ['"Courier New"', 'Courier', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #F2EDE4;
+            color: #1A1410;
+            overflow-x: hidden;
+        }
+        .paper-bg {
+            background-image:
+                repeating-linear-gradient(0deg, transparent, transparent 31px, rgba(26,20,16,0.04) 31px, rgba(26,20,16,0.04) 32px);
+        }
+        .ticker-wrap {
+            overflow: hidden; white-space: nowrap;
+            background: #1A1410; color: #C9BDA8;
+            font-size: 11px; letter-spacing: 0.5px; padding: 6px 0;
+        }
+        .ticker { display: inline-block; animation: ticker 60s linear infinite; }
+        @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        .nav-blur {
+            backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            background: rgba(242,237,228,0.85);
+        }
+        .stamp {
+            border: 3px solid #8B2500; border-radius: 50%;
+            width: 120px; height: 120px;
+            display: flex; align-items: center; justify-content: center;
+            text-align: center; color: #8B2500;
+            font-family: Georgia, serif; font-weight: 900;
+            font-size: 11px; text-transform: uppercase; line-height: 1.2;
+            transform: rotate(-15deg); opacity: 0.35;
+            position: absolute; pointer-events: none;
+        }
+        .stamp-animated { animation: stamp-appear 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+        @keyframes stamp-appear {
+            0% { transform: rotate(-15deg) scale(2.5); opacity: 0; }
+            70% { opacity: 0.5; }
+            100% { transform: rotate(-15deg) scale(1); opacity: 0.35; }
+        }
+        .doc-frame { position: relative; border: 2px solid #C9BDA8; padding: 12px; background: #EAE2D6; }
+        .doc-frame::before, .doc-frame::after {
+            content: ''; position: absolute; width: 20px; height: 20px;
+            border-color: #8B2500; border-style: solid;
+        }
+        .doc-frame::before { top: -2px; left: -2px; border-width: 3px 0 0 3px; }
+        .doc-frame::after { bottom: -2px; right: -2px; border-width: 0 3px 3px 0; }
+        .doc-frame .corner-tr, .doc-frame .corner-bl {
+            position: absolute; width: 20px; height: 20px;
+            border-color: #8B2500; border-style: solid;
+        }
+        .doc-frame .corner-tr { top: -2px; right: -2px; border-width: 3px 3px 0 0; }
+        .doc-frame .corner-bl { bottom: -2px; left: -2px; border-width: 0 0 3px 3px; }
+        .service-card {
+            position: relative; overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .service-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(26,20,16,0.12); }
+        .service-card .stamp-hover {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%) rotate(-20deg) scale(0);
+            opacity: 0; transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            pointer-events: none; z-index: 5;
+        }
+        .service-card:hover .stamp-hover {
+            transform: translate(-50%, -50%) rotate(-20deg) scale(1); opacity: 0.2;
+        }
+        .premium-stamp {
+            position: absolute; top: 50%; right: -20px;
+            transform: translateY(-50%) rotate(-20deg); opacity: 0.08;
+            pointer-events: none; z-index: 1; transition: opacity 0.4s ease;
+            border: 4px solid #F2EDE4; border-radius: 50%;
+            width: 200px; height: 200px;
+            display: flex; align-items: center; justify-content: center;
+            text-align: center; color: #F2EDE4;
+            font-family: Georgia, serif; font-weight: 900;
+            font-size: 11px; text-transform: uppercase; line-height: 1.2;
+        }
+        .premium-block:hover .premium-stamp { opacity: 0.18; }
+        .agent-card { transition: transform 0.3s ease; }
+        .agent-card:hover { transform: scale(1.02); }
+        .quiz-option {
+            cursor: pointer; border: 2px solid #C9BDA8;
+            padding: 14px 20px; transition: all 0.2s ease;
+            position: relative; overflow: hidden;
+        }
+        .quiz-option:hover { border-color: #8B2500; background: rgba(139,37,0,0.05); }
+        .quiz-option.selected { border-color: #8B2500; background: rgba(139,37,0,0.1); }
+        .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.5s ease, padding 0.3s ease; }
+        .faq-answer.open { max-height: 600px; }
+        .faq-icon { transition: transform 0.3s ease; }
+        .faq-item.open .faq-icon { transform: rotate(45deg); }
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(26,20,16,0.6);
+            backdrop-filter: blur(4px); z-index: 100;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: all; }
+        .modal-content { transform: translateY(20px) scale(0.97); transition: transform 0.3s ease; }
+        .modal-overlay.active .modal-content { transform: translateY(0) scale(1); }
+        .toast {
+            position: fixed; bottom: 30px; right: 30px;
+            background: #1A1410; color: #F2EDE4;
+            max-width: 420px; padding: 20px 24px;
+            font-size: 13px; line-height: 1.6; z-index: 200;
+            transform: translateY(120%);
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border-left: 4px solid #8B2500;
+        }
+        .toast.visible { transform: translateY(0); }
+        input[type="range"] {
+            -webkit-appearance: none; appearance: none;
+            width: 100%; height: 6px; background: #C9BDA8;
+            border-radius: 3px; outline: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none; appearance: none;
+            width: 22px; height: 22px; border-radius: 50%;
+            background: #8B2500; cursor: pointer;
+            border: 3px solid #F2EDE4; box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+        .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+        @keyframes pulse-border {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(139,37,0,0.4); }
+            50% { box-shadow: 0 0 0 12px rgba(139,37,0,0); }
+        }
+        .cta-pulse { animation: pulse-border 2s ease-in-out infinite; }
+        .red-indent { text-indent: 2em; }
+        .disclaimer { font-size: 9px; line-height: 1.5; color: #8C7E6F; }
+        .counter-num { font-variant-numeric: tabular-nums; }
+        body.no-scroll { overflow: hidden; }
+        *:focus-visible { outline: 2px solid #8B2500; outline-offset: 2px; }
+        @keyframes gentle-sway { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(0.5deg); } }
+        .portrait-sway { animation: gentle-sway 6s ease-in-out infinite; transform-origin: bottom center; }
+        @keyframes glasses-glare { 0%, 80%, 100% { opacity: 0; } 85% { opacity: 0.6; } 90% { opacity: 0; } }
+        .glasses-glare { animation: glasses-glare 5s ease-in-out infinite; }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+        }
+        .ticker-wrap::-webkit-scrollbar { display: none; }
+        .ticker-wrap { scrollbar-width: none; }
+    </style>
+</head>
+<body class="paper-bg">
+
+    <div class="ticker-wrap" aria-hidden="true">
+        <div class="ticker">
+            <span class="mx-8">СРЕДНЯЯ ДЛИНА КИШЕЧНИКА ВЗРОСЛОГО ЧЕЛОВЕКА — 7–8 МЕТРОВ</span>
+            <span class="mx-8 text-stamp">&#9632;</span>
+            <span class="mx-8">СЛОВО «СМЕТАНА» ПРОИСХОДИТ ОТ ГЛАГОЛА «СМЕТАТЬ»</span>
+            <span class="mx-8 text-stamp">&#9632;</span>
+            <span class="mx-8">ГОСТ 31457-2012 РЕГУЛИРУЕТ ПРОИЗВОДСТВО СГУЩЁННОГО МОЛОКА</span>
+            <span class="mx-8 text-stamp">&#9632;</span>
+            <span class="mx-8">ПАРИЖ НАХОДИТСЯ НА 48°51' С.Ш., 2°21' В.Д.</span>
+            <span class="mx-8 text-stamp">&#9632;</span>
+            <span class="mx-8">КОД РЕГИОНА БУРЯТИИ — 03, А НЕ 81, КАК МНОГИЕ ОШИБОЧНО ПОЛАГАЮТ</span>
+            <span class="mx-8 text-stamp">&#9632;</span>
+            <span class="mx-8">В 1903 ГОДУ В РОССИИ БЫЛО 47 ГУБЕРНИЙ И ОБЛАСТЕЙ</span>
+            <span class="mx-8 text-stamp">&#9632;</span>
+            <span class="mx-8">ПИНГВИНЫ НЕ ИМЕЮТ КОЛЕННЫХ СУСТАВОВ — ЭТО МИФ, НО ВЫ ВСЁ РАВНО ЭТОМУ ПОВЕРИЛИ</span>
+            <span class="mx-8 text-stamp">&#9632;</span>
+            <span class="mx-8">СРЕДНЯЯ ДЛИНА КИШЕЧНИКА ВЗРОСЛОГО ЧЕЛОВЕКА — 7–8 МЕТРОВ</span>
+            <span class="mx-8 text-stamp">&#9632;</span>
+            <span class="mx-8">СЛОВО «СМЕТАНА» ПРОИСХОДИТ ОТ ГЛАГОЛА «СМЕТАТЬ»</span>
+            <span class="mx-8 text-stamp">&#9632;</span>
+            <span class="mx-8">ГОСТ 31457-2012 РЕГУЛИРУЕТ ПРОИЗВОДСТВО СГУЩЁННОГО МОЛОКА</span>
+            <span class="mx-8 text-stamp">&#9632;</span>
+            <span class="mx-8">ПАРИЖ НАХОДИТСЯ НА 48°51' С.Ш., 2°21' В.Д.</span>
+            <span class="mx-8 text-stamp">&#9632;</span>
+            <span class="mx-8">КОД РЕГИОНА БУРЯТИИ — 03, А НЕ 81, КАК МНОГИЕ ОШИБОЧНО ПОЛАГАЮТ</span>
+            <span class="mx-8 text-stamp">&#9632;</span>
+            <span class="mx-8">В 1903 ГОДУ В РОССИИ БЫЛО 47 ГУБЕРНИЙ И ОБЛАСТЕЙ</span>
+            <span class="mx-8 text-stamp">&#9632;</span>
+            <span class="mx-8">ПИНГВИНЫ НЕ ИМЕЮТ КОЛЕННЫХ СУСТАВОВ — ЭТО МИФ, НО ВЫ ВСЁ РАВНО ЭТОМУ ПОВЕРИЛИ</span>
+            <span class="mx-8 text-stamp">&#9632;</span>
+        </div>
+    </div>
+
+    <nav class="nav-blur sticky top-0 z-50 border-b border-line" role="navigation" aria-label="Основная навигация">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 flex items-center justify-between h-14">
+            <a href="#" class="flex items-center gap-3" aria-label="На главную">
+                <div class="w-9 h-9 rounded-full border-2 border-stamp flex items-center justify-center">
+                    <span class="font-display font-black text-stamp text-xs">ПД</span>
+                </div>
+                <span class="font-display font-bold text-ink text-sm hidden sm:inline">Профессиональный Душнила</span>
+            </a>
+            <div class="flex items-center gap-6 text-xs tracking-wide">
+                <a href="#services" class="text-ink-light hover:text-stamp transition-colors hidden md:inline">Услуги</a>
+                <a href="#agents" class="text-ink-light hover:text-stamp transition-colors hidden md:inline">Агенты</a>
+                <a href="#quiz" class="text-ink-light hover:text-stamp transition-colors hidden md:inline">Тест</a>
+                <a href="#faq" class="text-ink-light hover:text-stamp transition-colors hidden md:inline">FAQ</a>
+                <button onclick="openModal()" class="bg-stamp text-paper px-4 py-2 text-xs font-semibold tracking-wider hover:bg-stamp-light transition-colors rounded-sm">ВЫЗВАТЬ</button>
+            </div>
+        </div>
+    </nav>
+
+    <header class="relative min-h-[90vh] flex items-center overflow-hidden">
+        <div class="stamp absolute top-16 right-12 w-48 h-48 text-[10px] opacity-[0.07] hidden lg:flex" style="border-width:4px;"><span>ЛИЦЕНЗИЯ<br>НА ЗАНУДСТВО<br>№000001</span></div>
+        <div class="stamp absolute bottom-20 left-8 w-36 h-36 text-[9px] opacity-[0.06] hidden lg:flex" style="border-width:3px; transform:rotate(12deg);"><span>СЕРТИФИЦИРОВАННО</span></div>
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 w-full py-20">
+            <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+                <div class="relative z-10">
+                    <p class="text-dust text-xs tracking-[0.3em] uppercase mb-6 font-semibold">Государственное（нет） агентство</p>
+                    <h1 class="font-display font-black text-4xl sm:text-5xl lg:text-[3.5rem] leading-[1.1] text-ink mb-6">Вообще-то, не&nbsp;&laquo;придумай 3&nbsp;идеи&raquo;, а&nbsp;&laquo;разработай концепции&raquo;&thinsp;...</h1>
+                    <p class="text-ink-light text-base sm:text-lg leading-relaxed mb-8 max-w-lg">Бесит? Наш душнила сделает хуже. Приедет, сядет и&nbsp;начнёт. Гости уйдут. Спор выиграет. Корпоратив превратится в&nbsp;заседание.</p>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <button onclick="openModal()" class="cta-pulse bg-stamp text-paper px-8 py-4 font-semibold text-sm tracking-wider hover:bg-stamp-light transition-colors rounded-sm">ОФОРМИТЬ ВЫЕЗДНУЮ ТОСКУ</button>
+                        <a href="#services" class="border-2 border-ink text-ink px-8 py-4 font-semibold text-sm tracking-wider hover:bg-ink hover:text-paper transition-all rounded-sm text-center">ПОДРОБНЕЕ</a>
+                    </div>
+                    <p class="text-dust text-[11px] mt-6 leading-relaxed max-w-sm"><i class="fa-solid fa-circle-info mr-1"></i>Работаем с&nbsp;2019&nbsp;г. Ни один клиент не&nbsp;остался доволен. Гарантия.</p>
+                </div>
+                <div class="flex justify-center lg:justify-end">
+                    <div class="doc-frame max-w-[300px] w-full">
+                        <div class="corner-tr"></div>
+                        <div class="corner-bl"></div>
+                        <div class="overflow-hidden aspect-[3/4] bg-paper-dark flex items-end justify-center">
+                            <svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg" class="w-full h-full portrait-sway" aria-label="Сертифицированный душнила">
+                                <rect width="300" height="400" fill="#E5DDD0"/>
+                                <g opacity="0.06" stroke="#1A1410" stroke-width="0.5"><line x1="0" y1="40" x2="300" y2="40"/><line x1="0" y1="72" x2="300" y2="72"/><line x1="0" y1="104" x2="300" y2="104"/><line x1="0" y1="136" x2="300" y2="136"/><line x1="0" y1="168" x2="300" y2="168"/><line x1="0" y1="200" x2="300" y2="200"/><line x1="0" y1="232" x2="300" y2="232"/><line x1="0" y1="264" x2="300" y2="264"/><line x1="0" y1="296" x2="300" y2="296"/><line x1="0" y1="328" x2="300" y2="328"/><line x1="0" y1="360" x2="300" y2="360"/></g>
+                                <path d="M90,400 L90,310 Q90,280 120,270 L130,267 L150,262 L170,267 L180,270 Q210,280 210,310 L210,400 Z" fill="#3D3830"/>
+                                <path d="M130,267 L142,295 L150,280 L158,295 L170,267" fill="none" stroke="#E5DDD0" stroke-width="2.5"/>
+                                <path d="M147,280 L150,310 L153,280 Z" fill="#8B2500"/><path d="M148,277 L150,282 L152,277 Z" fill="#8B2500"/>
+                                <circle cx="150" cy="298" r="1.5" fill="#E5DDD0" opacity="0.7"/><circle cx="150" cy="315" r="1.5" fill="#E5DDD0" opacity="0.7"/><circle cx="150" cy="332" r="1.5" fill="#E5DDD0" opacity="0.7"/>
+                                <rect x="139" y="242" width="22" height="28" rx="4" fill="#D4BFA6"/>
+                                <ellipse cx="150" cy="205" rx="52" ry="62" fill="#D4BFA6"/>
+                                <path d="M98,205 Q98,140 150,135 Q202,140 202,205 Q200,175 190,165 Q175,148 150,145 Q125,148 110,165 Q100,175 98,205 Z" fill="#4A3F34"/>
+                                <path d="M98,205 Q96,190 100,180" fill="none" stroke="#4A3F34" stroke-width="3"/><path d="M202,205 Q204,190 200,180" fill="none" stroke="#4A3F34" stroke-width="3"/>
+                                <ellipse cx="97" cy="210" rx="8" ry="14" fill="#C9AD8C"/><ellipse cx="203" cy="210" rx="8" ry="14" fill="#C9AD8C"/>
+                                <rect x="115" y="193" width="30" height="22" rx="3" fill="none" stroke="#1A1410" stroke-width="2.5"/><rect x="155" y="193" width="30" height="22" rx="3" fill="none" stroke="#1A1410" stroke-width="2.5"/>
+                                <line x1="145" y1="204" x2="155" y2="204" stroke="#1A1410" stroke-width="2"/><line x1="97" y1="204" x2="115" y2="204" stroke="#1A1410" stroke-width="1.5"/><line x1="185" y1="204" x2="203" y2="204" stroke="#1A1410" stroke-width="1.5"/>
+                                <rect class="glasses-glare" x="118" y="195" width="8" height="5" rx="1" fill="white" opacity="0"/><rect class="glasses-glare" x="158" y="195" width="8" height="5" rx="1" fill="white" opacity="0" style="animation-delay:0.3s"/>
+                                <circle cx="130" cy="205" r="3" fill="#1A1410"/><circle cx="170" cy="205" r="3" fill="#1A1410"/>
+                                <circle cx="129" cy="204" r="1" fill="white" opacity="0.5"/><circle cx="169" cy="204" r="1" fill="white" opacity="0.5"/>
+                                <path d="M114,188 Q122,183 146,186" fill="none" stroke="#4A3F34" stroke-width="2.5" stroke-linecap="round"/><path d="M186,188 L154,186" fill="none" stroke="#4A3F34" stroke-width="2.5" stroke-linecap="round"/>
+                                <path d="M150,210 L146,226 Q148,228 150,228 Q152,228 154,226 Z" fill="#C9AD8C"/>
+                                <path d="M137,238 Q143,235 150,236 Q157,235 163,238" fill="none" stroke="#8B6B55" stroke-width="1.8" stroke-linecap="round"/>
+                                <line x1="125" y1="178" x2="128" y2="185" stroke="#C9AD8C" stroke-width="1" opacity="0.6"/><line x1="133" y1="176" x2="135" y2="184" stroke="#C9AD8C" stroke-width="1" opacity="0.6"/><line x1="150" y1="175" x2="150" y2="183" stroke="#C9AD8C" stroke-width="1" opacity="0.6"/><line x1="167" y1="176" x2="165" y2="184" stroke="#C9AD8C" stroke-width="1" opacity="0.6"/><line x1="175" y1="178" x2="172" y2="185" stroke="#C9AD8C" stroke-width="1" opacity="0.6"/>
+                                <line x1="136" y1="238" x2="134" y2="241" stroke="#8B6B55" stroke-width="1" opacity="0.5"/><line x1="164" y1="238" x2="166" y2="241" stroke="#8B6B55" stroke-width="1" opacity="0.5"/>
+                                <path d="M90,310 Q70,330 60,350 Q55,360 65,365" fill="none" stroke="#3D3830" stroke-width="18" stroke-linecap="round"/><circle cx="65" cy="365" r="9" fill="#D4BFA6"/>
+                                <line x1="65" y1="365" x2="45" y2="385" stroke="#8C7E6F" stroke-width="3.5" stroke-linecap="round"/><circle cx="38" cy="392" r="18" fill="none" stroke="#8C7E6F" stroke-width="3"/><circle cx="38" cy="392" r="14" fill="rgba(200,220,240,0.12)"/>
+                                <path d="M30,384 Q33,380 38,381" fill="none" stroke="white" stroke-width="1.5" opacity="0.3"/>
+                                <path d="M210,310 Q230,330 240,345" fill="none" stroke="#3D3830" stroke-width="18" stroke-linecap="round"/><circle cx="240" cy="345" r="8" fill="#D4BFA6"/>
+                                <line x1="240" y1="345" x2="250" y2="330" stroke="#D4BFA6" stroke-width="5" stroke-linecap="round"/>
+                                <rect x="185" y="325" width="16" height="14" rx="1" fill="none" stroke="#2A2520" stroke-width="1"/><path d="M186,325 L193,315 L200,325" fill="#E5DDD0"/>
+                            </svg>
+                        </div>
+                        <div class="mt-3 text-center">
+                            <p class="text-[10px] text-dust tracking-widest uppercase">Сертифицированный душнила 1-го класса</p>
+                            <p class="text-[10px] text-dust tracking-wider mt-1">Удостоверение №0047</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="border-y border-line bg-paper-dark py-12 reveal" aria-label="Статистика">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                <div><p class="font-display font-black text-3xl sm:text-4xl text-stamp counter-num" data-target="1247">0</p><p class="text-dust text-xs mt-2 tracking-wider">ВЫЕЗДОВ</p></div>
+                <div><p class="font-display font-black text-3xl sm:text-4xl text-stamp counter-num" data-target="0">0</p><p class="text-dust text-xs mt-2 tracking-wider">ГОСТЕЙ ОСТАЛОСЬ</p></div>
+                <div><p class="font-display font-black text-3xl sm:text-4xl text-stamp counter-num" data-target="342">0</p><p class="text-dust text-xs mt-2 tracking-wider">ПОБЕД НАД ТЁЩАМИ</p></div>
+                <div><p class="font-display font-black text-3xl sm:text-4xl text-stamp">98<span class="text-2xl">%</span></p><p class="text-dust text-xs mt-2 tracking-wider">КОРПОРАТИВОВ, ПОСЛЕ КОТОРЫХ ЛЮДИ УВОЛИЛИСЬ</p></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="services" class="py-24 reveal" aria-label="Услуги">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6">
+            <div class="text-center mb-16">
+                <p class="text-stamp text-xs tracking-[0.3em] uppercase font-semibold mb-3">Раздел второй. Назначение</p>
+                <h2 class="font-display font-black text-3xl sm:text-4xl text-ink">Зачем это нужно</h2>
+                <p class="text-dust text-sm mt-4 max-w-xl mx-auto leading-relaxed">Согласно внутреннему регламенту (п.&nbsp;2.1), каждая услуга имеет строго документальное обоснование</p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="service-card bg-card rounded-sm p-8 border border-line">
+                    <div class="stamp-hover w-40 h-40 text-[9px]" style="border-width:3px;"><span>ДОКУМЕНТАЛЬНО ПОДТВЕРЖДЕНО</span></div>
+                    <div class="w-12 h-12 rounded-full bg-stamp/10 flex items-center justify-center mb-6"><i class="fa-solid fa-door-open text-stamp text-lg"></i></div>
+                    <h3 class="font-display font-bold text-xl text-ink mb-3">Депортация гостей</h3>
+                    <p class="text-ink-light text-sm leading-relaxed mb-4">Наш агент начнёт пересказывать инструкцию к&nbsp;микроволновке&nbsp;&mdash; со всеми приложениями и&nbsp;примечаниями. Гости уйдут за&nbsp;<strong class="text-ink">12 минут</strong>. Гарантия или возврат 15% суммы.</p>
+                    <p class="text-dust text-[11px] tracking-wider">СРЕДНЕЕ ВРЕМЯ: 12 МИН &bull; РЕКОРД: 4 МИН</p>
+                </div>
+                <div class="service-card bg-card rounded-sm p-8 border border-line">
+                    <div class="stamp-hover w-40 h-40 text-[9px]" style="border-width:3px;"><span>ДОКАЗАНО</span></div>
+                    <div class="w-12 h-12 rounded-full bg-stamp/10 flex items-center justify-center mb-6"><i class="fa-solid fa-chart-line text-stamp text-lg"></i></div>
+                    <h3 class="font-display font-bold text-xl text-ink mb-3">Тактическая победа над тёщей</h3>
+                    <p class="text-ink-light text-sm leading-relaxed mb-4">Докажет с&nbsp;графиками, диаграммами и&nbsp;ссылками на&nbsp;диссертации, что огурцы надо сажать под другим углом. Тёща замолчит. <strong class="text-ink">Навсегда.</strong></p>
+                    <p class="text-dust text-[11px] tracking-wider">ЭФФЕКТИВНОСТЬ: 100% &bull; СТОИМОСТЬ МИРА: БЕСЦЕННА</p>
+                </div>
+                <div class="service-card bg-card rounded-sm p-8 border border-line">
+                    <div class="stamp-hover w-40 h-40 text-[9px]" style="border-width:3px;"><span>БЕЗОПАСНЫЙ УРОВЕНЬ</span></div>
+                    <div class="w-12 h-12 rounded-full bg-stamp/10 flex items-center justify-center mb-6"><i class="fa-solid fa-mug-hot text-stamp text-lg"></i></div>
+                    <h3 class="font-display font-bold text-xl text-ink mb-3">Корпоративный дауншифтинг</h3>
+                    <p class="text-ink-light text-sm leading-relaxed mb-4">Понизит градус веселья до&nbsp;безопасного уровня. Ни&nbsp;одного танца. Ни&nbsp;одной шутки. Коллеги разойдутся с&nbsp;чувством <strong class="text-ink">лёгкой тошноты и&nbsp;уважения</strong>.</p>
+                    <p class="text-dust text-[11px] tracking-wider">ТИПИЧНЫЙ РЕЗУЛЬТАТ: ВСЕ УШЛИ ДО 22:00</p>
+                </div>
+            </div>
+            <div class="mt-8 premium-block bg-ink text-paper rounded-sm p-8 border-2 border-stamp/30 relative overflow-hidden transition-shadow duration-300 hover:shadow-[0_0_60px_rgba(139,37,0,0.15)]">
+                <div class="premium-stamp">ПРЕМИУМ<br>УСЛУГА<br>ОДОБРЕНА</div>
+                <div class="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-stamp/40"></div>
+                <div class="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-stamp/40"></div>
+                <div class="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-stamp/40"></div>
+                <div class="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-stamp/40"></div>
+                <div class="grid md:grid-cols-[1fr_auto] gap-6 items-center relative z-10">
+                    <div>
+                        <div class="flex items-center gap-3 mb-2">
+                            <p class="text-stamp text-xs tracking-[0.2em] uppercase font-semibold">Премиум-услуга</p>
+                            <span class="text-[9px] tracking-wider bg-stamp/20 text-stamp px-2 py-0.5 rounded-sm font-semibold">ТОП</span>
+                        </div>
+                        <h3 class="font-display font-bold text-2xl mb-3">&laquo;Полное уничтожение атмосферы&raquo;</h3>
+                        <p class="text-paper/70 text-sm leading-relaxed">Агент приезжает с&nbsp;проектором и&nbsp;презентацией на&nbsp;147 слайдов о&nbsp;истории производства гвоздей в&nbsp;Вологодской области (1867&ndash;1903). Включает Q&amp;A сессию. Никто не&nbsp;выдерживает.</p>
+                        <p class="text-paper/35 text-[11px] mt-3 italic">* Из них 23 слайда — исключительно библиография, но агент читает её вслух</p>
+                    </div>
+                    <div class="text-right flex-shrink-0">
+                        <p class="font-display font-black text-3xl text-stamp">12 000 &#8381;/час</p>
+                        <p class="text-paper/50 text-[11px] mt-1">проектор в&nbsp;цену не&nbsp;входит</p>
+                        <p class="text-paper/30 text-[10px] mt-1">минимальный заказ — 2 часа</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="agents" class="py-24 bg-paper-dark reveal" aria-label="Агенты">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6">
+            <div class="text-center mb-16">
+                <p class="text-stamp text-xs tracking-[0.3em] uppercase font-semibold mb-3">Кадровый резерв</p>
+                <h2 class="font-display font-black text-3xl sm:text-4xl text-ink">Наши агенты</h2>
+                <p class="text-dust text-sm mt-4 max-w-lg mx-auto leading-relaxed">Каждый прошёл 6-месячную подготовку в&nbsp;Институте Придирчивости им.&nbsp;В.&nbsp;И.&nbsp;Дальнего</p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <article class="agent-card bg-card rounded-sm border border-line overflow-hidden">
+                    <div class="overflow-hidden aspect-[3/4] bg-paper-dark flex items-end justify-center">
+                        <svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg" class="w-full h-full portrait-sway" aria-label="Борис Анатольевич">
+                            <rect width="300" height="400" fill="#E5DDD0"/>
+                            <g opacity="0.05" stroke="#1A1410" stroke-width="0.5"><line x1="0" y1="40" x2="300" y2="40"/><line x1="0" y1="72" x2="300" y2="72"/><line x1="0" y1="104" x2="300" y2="104"/><line x1="0" y1="136" x2="300" y2="136"/><line x1="0" y1="168" x2="300" y2="168"/><line x1="0" y1="200" x2="300" y2="200"/><line x1="0" y1="232" x2="300" y2="232"/><line x1="0" y1="264" x2="300" y2="264"/><line x1="0" y1="296" x2="300" y2="296"/><line x1="0" y1="328" x2="300" y2="328"/><line x1="0" y1="360" x2="300" y2="360"/></g>
+                            <path d="M85,400 L85,300 Q85,275 115,265 L150,258 L185,265 Q215,275 215,300 L215,400 Z" fill="#2E2A24"/>
+                            <path d="M105,270 L150,260 L195,270 L190,400 L110,400 Z" fill="#4A3F34"/>
+                            <path d="M135,265 L143,290 L150,278 L157,290 L165,265" fill="none" stroke="#E5DDD0" stroke-width="2"/>
+                            <circle cx="150" cy="290" r="2" fill="#8C7E6F"/><circle cx="150" cy="310" r="2" fill="#8C7E6F"/><circle cx="150" cy="330" r="2" fill="#8C7E6F"/>
+                            <path d="M130,290 Q115,300 120,320" fill="none" stroke="#C9BDA8" stroke-width="1"/><circle cx="120" cy="322" r="5" fill="none" stroke="#C9BDA8" stroke-width="1"/><line x1="120" y1="322" x2="120" y2="319" stroke="#C9BDA8" stroke-width="0.8"/><line x1="120" y1="322" x2="123" y2="322" stroke="#C9BDA8" stroke-width="0.8"/>
+                            <rect x="138" y="238" width="24" height="30" rx="5" fill="#D4BFA6"/>
+                            <ellipse cx="150" cy="195" rx="56" ry="66" fill="#D4BFA6"/>
+                            <path d="M94,195 Q94,125 150,120 Q206,125 206,195 Q204,160 192,148 Q176,130 150,127 Q124,130 108,148 Q96,160 94,195 Z" fill="#D4BFA6"/>
+                            <path d="M94,195 Q90,185 92,170" fill="none" stroke="#6B5E50" stroke-width="4" stroke-linecap="round"/><path d="M206,195 Q210,185 208,170" fill="none" stroke="#6B5E50" stroke-width="4" stroke-linecap="round"/>
+                            <path d="M100,160 Q95,150 96,140" fill="none" stroke="#6B5E50" stroke-width="2" opacity="0.5"/><path d="M200,160 Q205,150 204,140" fill="none" stroke="#6B5E50" stroke-width="2" opacity="0.5"/>
+                            <ellipse cx="93" cy="200" rx="9" ry="15" fill="#C9AD8C"/><ellipse cx="207" cy="200" rx="9" ry="15" fill="#C9AD8C"/>
+                            <circle cx="128" cy="195" r="18" fill="none" stroke="#1A1410" stroke-width="2.5"/><circle cx="172" cy="195" r="18" fill="none" stroke="#1A1410" stroke-width="2.5"/>
+                            <line x1="146" y1="195" x2="154" y2="195" stroke="#1A1410" stroke-width="2"/><line x1="93" y1="195" x2="110" y2="195" stroke="#1A1410" stroke-width="1.5"/><line x1="190" y1="195" x2="207" y2="195" stroke="#1A1410" stroke-width="1.5"/>
+                            <circle class="glasses-glare" cx="122" cy="188" r="4" fill="white" opacity="0"/><circle class="glasses-glare" cx="166" cy="188" r="4" fill="white" opacity="0" style="animation-delay:0.5s"/>
+                            <circle cx="128" cy="197" r="3.5" fill="#1A1410"/><circle cx="172" cy="197" r="3.5" fill="#1A1410"/>
+                            <circle cx="127" cy="196" r="1.2" fill="white" opacity="0.4"/><circle cx="171" cy="196" r="1.2" fill="white" opacity="0.4"/>
+                            <path d="M108,175 Q118,168 146,173" fill="none" stroke="#6B5E50" stroke-width="3.5" stroke-linecap="round"/><path d="M192,175 L154,173" fill="none" stroke="#6B5E50" stroke-width="3.5" stroke-linecap="round"/>
+                            <path d="M150,200 L143,220 Q146,224 150,224 Q154,224 157,220 Z" fill="#C9AD8C"/>
+                            <path d="M135,228 Q142,232 150,230 Q158,232 165,228" fill="#6B5E50" opacity="0.6"/>
+                            <path d="M137,236 Q143,233 150,234 Q157,233 163,236" fill="none" stroke="#8B6B55" stroke-width="1.5"/>
+                            <line x1="110" y1="210" x2="112" y2="220" stroke="#C9AD8C" stroke-width="1" opacity="0.5"/><line x1="190" y1="210" x2="188" y2="220" stroke="#C9AD8C" stroke-width="1" opacity="0.5"/>
+                            <path d="M85,300 Q65,315 75,340 Q85,360 120,350" fill="none" stroke="#2E2A24" stroke-width="20" stroke-linecap="round"/>
+                            <path d="M215,300 Q235,315 225,340 Q215,360 180,350" fill="none" stroke="#2E2A24" stroke-width="20" stroke-linecap="round"/>
+                            <ellipse cx="120" cy="348" rx="10" ry="7" fill="#D4BFA6" transform="rotate(-10 120 348)"/><ellipse cx="180" cy="348" rx="10" ry="7" fill="#D4BFA6" transform="rotate(10 180 348)"/>
+                        </svg>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="font-display font-bold text-lg text-ink">Борис Анатольевич</h3>
+                        <p class="text-stamp text-xs font-semibold tracking-wider mt-1">62 ГОДА &bull; СТАЖ: 41 ГОД</p>
+                        <p class="text-ink-light text-sm leading-relaxed mt-3">Специализация: ГОСТы. Может 4&nbsp;часа говорить о&nbsp;разнице между ГОСТ&nbsp;и&nbsp;ТУ. Единственный человек, который читал приложения к&nbsp;СНиПам <em>для удовольствия</em>.</p>
+                        <div class="mt-4 pt-4 border-t border-line grid grid-cols-3 gap-2 text-center">
+                            <div><p class="font-display font-bold text-lg text-ink">847</p><p class="text-dust text-[10px] tracking-wider">ГОСТОВ</p></div>
+                            <div><p class="font-display font-bold text-lg text-ink">100%</p><p class="text-dust text-[10px] tracking-wider">ПОБЕД</p></div>
+                            <div><p class="font-display font-bold text-lg text-ink">231</p><p class="text-dust text-[10px] tracking-wider">ГОСТЕЙ</p></div>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="agent-card bg-card rounded-sm border border-line overflow-hidden">
+                    <div class="overflow-hidden aspect-[3/4] bg-paper-dark flex items-end justify-center">
+                        <svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg" class="w-full h-full portrait-sway" style="animation-delay:-2s" aria-label="Инна Павловна">
+                            <rect width="300" height="400" fill="#E5DDD0"/>
+                            <g opacity="0.05" stroke="#1A1410" stroke-width="0.5"><line x1="0" y1="40" x2="300" y2="40"/><line x1="0" y1="72" x2="300" y2="72"/><line x1="0" y1="104" x2="300" y2="104"/><line x1="0" y1="136" x2="300" y2="136"/><line x1="0" y1="168" x2="300" y2="168"/><line x1="0" y1="200" x2="300" y2="200"/><line x1="0" y1="232" x2="300" y2="232"/><line x1="0" y1="264" x2="300" y2="264"/><line x1="0" y1="296" x2="300" y2="296"/><line x1="0" y1="328" x2="300" y2="328"/><line x1="0" y1="360" x2="300" y2="360"/></g>
+                            <path d="M90,400 L90,310 Q90,278 118,268 L150,260 L182,268 Q210,278 210,310 L210,400 Z" fill="#5C4033"/>
+                            <path d="M120,268 L150,300 L180,268" fill="#D4BFA6"/><path d="M120,268 L150,300 L180,268" fill="none" stroke="#5C4033" stroke-width="1.5"/>
+                            <rect x="135" y="268" width="30" height="30" rx="2" fill="#E5DDD0"/>
+                            <circle cx="150" cy="278" r="3" fill="#8B2500"/><circle cx="150" cy="278" r="1.5" fill="#B53D1A"/>
+                            <rect x="139" y="240" width="22" height="26" rx="4" fill="#D4BFA6"/>
+                            <path d="M135,265 Q150,275 165,265" fill="none" stroke="#C9BDA8" stroke-width="0.8"/>
+                            <ellipse cx="150" cy="198" rx="50" ry="60" fill="#D4BFA6"/>
+                            <path d="M100,198 Q98,135 150,128 Q202,135 200,198 Q198,168 185,155 Q170,140 150,138 Q130,140 115,155 Q102,168 100,198 Z" fill="#3D3028"/>
+                            <ellipse cx="150" cy="130" rx="22" ry="16" fill="#3D3028"/>
+                            <line x1="138" y1="122" x2="145" y2="132" stroke="#C9BDA8" stroke-width="1"/><line x1="162" y1="122" x2="155" y2="132" stroke="#C9BDA8" stroke-width="1"/><line x1="150" y1="118" x2="150" y2="128" stroke="#C9BDA8" stroke-width="1"/>
+                            <path d="M100,198 Q97,210 100,225" fill="none" stroke="#3D3028" stroke-width="5"/><path d="M200,198 Q203,210 200,225" fill="none" stroke="#3D3028" stroke-width="5"/>
+                            <circle cx="95" cy="210" r="3" fill="#C9BDA8"/><circle cx="95" cy="215" r="2" fill="#C9BDA8"/><circle cx="205" cy="210" r="3" fill="#C9BDA8"/><circle cx="205" cy="215" r="2" fill="#C9BDA8"/>
+                            <ellipse cx="128" cy="198" rx="20" ry="16" fill="none" stroke="#1A1410" stroke-width="2"/><ellipse cx="172" cy="198" rx="20" ry="16" fill="none" stroke="#1A1410" stroke-width="2"/>
+                            <line x1="148" y1="198" x2="152" y2="198" stroke="#1A1410" stroke-width="2"/><line x1="95" y1="198" x2="108" y2="198" stroke="#1A1410" stroke-width="1.5"/><line x1="192" y1="198" x2="205" y2="198" stroke="#1A1410" stroke-width="1.5"/>
+                            <ellipse class="glasses-glare" cx="120" cy="192" rx="5" ry="3" fill="white" opacity="0"/><ellipse class="glasses-glare" cx="164" cy="192" rx="5" ry="3" fill="white" opacity="0" style="animation-delay:0.7s"/>
+                            <circle cx="128" cy="200" r="3" fill="#1A1410"/><circle cx="172" cy="200" r="3" fill="#1A1410"/>
+                            <path d="M112,183 Q120,179 144,182" fill="none" stroke="#3D3028" stroke-width="1.5" stroke-linecap="round"/><path d="M188,183 L156,182" fill="none" stroke="#3D3028" stroke-width="1.5" stroke-linecap="round"/>
+                            <path d="M150,202 L146,218 Q148,220 150,220 Q152,220 154,218 Z" fill="#C9AD8C"/>
+                            <path d="M140,230 Q145,227 150,228 Q155,227 160,230" fill="none" stroke="#8B6B55" stroke-width="1.5"/>
+                            <line x1="140" y1="230" x2="138" y2="233" stroke="#8B6B55" stroke-width="1" opacity="0.4"/>
+                            <path d="M210,310 Q225,330 220,350" fill="none" stroke="#5C4033" stroke-width="16" stroke-linecap="round"/><circle cx="220" cy="352" r="7" fill="#D4BFA6"/>
+                            <line x1="218" y1="348" x2="230" y2="330" stroke="#1A1410" stroke-width="2.5" stroke-linecap="round"/><line x1="230" y1="330" x2="233" y2="325" stroke="#8B2500" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M90,310 Q75,325 85,345" fill="none" stroke="#5C4033" stroke-width="16" stroke-linecap="round"/><ellipse cx="85" cy="347" rx="8" ry="6" fill="#D4BFA6"/>
+                        </svg>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="font-display font-bold text-lg text-ink">Инна Павловна</h3>
+                        <p class="text-stamp text-xs font-semibold tracking-wider mt-1">55 ЛЕТ &bull; СТАЖ: 33 ГОДА</p>
+                        <p class="text-ink-light text-sm leading-relaxed mt-3">Специализация: орфография и&nbsp;пунктуация. Исправляет ошибки в&nbsp;меню ресторанов. Однажды заставила официанта переписать счёт из-за отсутствия запятой при обороте.</p>
+                        <div class="mt-4 pt-4 border-t border-line grid grid-cols-3 gap-2 text-center">
+                            <div><p class="font-display font-bold text-lg text-ink">1 203</p><p class="text-dust text-[10px] tracking-wider">ОШИБОК</p></div>
+                            <div><p class="font-display font-bold text-lg text-ink">100%</p><p class="text-dust text-[10px] tracking-wider">ПОБЕД</p></div>
+                            <div><p class="font-display font-bold text-lg text-ink">89</p><p class="text-dust text-[10px] tracking-wider">МЕНЮ</p></div>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="agent-card bg-card rounded-sm border border-line overflow-hidden">
+                    <div class="overflow-hidden aspect-[3/4] bg-paper-dark flex items-end justify-center">
+                        <svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg" class="w-full h-full portrait-sway" style="animation-delay:-4s" aria-label="Виктор Сергеевич">
+                            <rect width="300" height="400" fill="#E5DDD0"/>
+                            <g opacity="0.05" stroke="#1A1410" stroke-width="0.5"><line x1="0" y1="40" x2="300" y2="40"/><line x1="0" y1="72" x2="300" y2="72"/><line x1="0" y1="104" x2="300" y2="104"/><line x1="0" y1="136" x2="300" y2="136"/><line x1="0" y1="168" x2="300" y2="168"/><line x1="0" y1="200" x2="300" y2="200"/><line x1="0" y1="232" x2="300" y2="232"/><line x1="0" y1="264" x2="300" y2="264"/><line x1="0" y1="296" x2="300" y2="296"/><line x1="0" y1="328" x2="300" y2="328"/><line x1="0" y1="360" x2="300" y2="360"/></g>
+                            <path d="M88,400 L88,305 Q88,275 118,265 L150,258 L182,265 Q212,275 212,305 L212,400 Z" fill="#5A5048"/>
+                            <rect x="133" y="242" width="34" height="28" rx="5" fill="#5A5048"/>
+                            <line x1="133" y1="255" x2="167" y2="255" stroke="#4A453E" stroke-width="0.8"/><line x1="133" y1="258" x2="167" y2="258" stroke="#4A453E" stroke-width="0.8"/>
+                            <ellipse cx="150" cy="195" rx="48" ry="62" fill="#D4BFA6"/>
+                            <path d="M102,195 Q100,128 150,122 Q200,128 198,195 Q196,162 184,150 Q170,136 150,134 Q130,136 116,150 Q104,162 102,195 Z" fill="#2E2420"/>
+                            <path d="M120,140 Q115,125 125,118" fill="none" stroke="#2E2420" stroke-width="3" stroke-linecap="round"/><path d="M140,132 Q138,115 148,112" fill="none" stroke="#2E2420" stroke-width="3" stroke-linecap="round"/>
+                            <path d="M165,135 Q170,118 178,120" fill="none" stroke="#2E2420" stroke-width="3" stroke-linecap="round"/><path d="M180,142 Q188,130 192,135" fill="none" stroke="#2E2420" stroke-width="2.5" stroke-linecap="round"/>
+                            <path d="M102,195 Q98,215 102,235" fill="none" stroke="#2E2420" stroke-width="6"/><path d="M198,195 Q202,215 198,235" fill="none" stroke="#2E2420" stroke-width="6"/>
+                            <ellipse cx="100" cy="205" rx="7" ry="12" fill="#C9AD8C"/><ellipse cx="200" cy="205" rx="7" ry="12" fill="#C9AD8C"/>
+                            <rect x="112" y="188" width="32" height="22" rx="4" fill="none" stroke="#1A1410" stroke-width="2.5"/><rect x="156" y="188" width="32" height="22" rx="4" fill="none" stroke="#1A1410" stroke-width="2.5"/>
+                            <line x1="144" y1="199" x2="156" y2="199" stroke="#1A1410" stroke-width="2"/><line x1="100" y1="199" x2="112" y2="199" stroke="#1A1410" stroke-width="1.5"/><line x1="188" y1="199" x2="200" y2="199" stroke="#1A1410" stroke-width="1.5"/>
+                            <rect class="glasses-glare" x="115" y="191" width="7" height="5" rx="1" fill="white" opacity="0"/><rect class="glasses-glare" x="159" y="191" width="7" height="5" rx="1" fill="white" opacity="0" style="animation-delay:0.4s"/>
+                            <circle cx="128" cy="200" r="3" fill="#1A1410"/><circle cx="172" cy="200" r="3" fill="#1A1410"/>
+                            <circle cx="127" cy="199" r="1" fill="white" opacity="0.4"/><circle cx="171" cy="199" r="1" fill="white" opacity="0.4"/>
+                            <path d="M112,183 Q120,177 143,181" fill="none" stroke="#2E2420" stroke-width="2" stroke-linecap="round"/><path d="M188,183 L157,181" fill="none" stroke="#2E2420" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M150,203 L144,220 Q147,223 150,223 Q153,223 156,220 Z" fill="#C9AD8C"/>
+                            <path d="M139,232 Q144,228 150,229 Q156,228 161,232" fill="none" stroke="#8B6B55" stroke-width="1.5"/>
+                            <path d="M142,232 Q146,236 150,235 Q154,236 158,232" fill="#8B6B55" opacity="0.3"/>
+                            <g fill="#2E2420" opacity="0.15"><circle cx="138" cy="235" r="0.8"/><circle cx="142" cy="237" r="0.8"/><circle cx="146" cy="238" r="0.8"/><circle cx="150" cy="238" r="0.8"/><circle cx="154" cy="238" r="0.8"/><circle cx="158" cy="237" r="0.8"/><circle cx="162" cy="235" r="0.8"/></g>
+                            <path d="M88,305 Q65,325 60,350" fill="none" stroke="#5A5048" stroke-width="16" stroke-linecap="round"/><circle cx="60" cy="352" r="8" fill="#D4BFA6"/>
+                            <rect x="35" y="340" width="30" height="40" rx="2" fill="#8B2500" transform="rotate(-5 50 360)"/><rect x="37" y="342" width="26" height="36" rx="1" fill="#A63A1A" transform="rotate(-5 50 360)"/>
+                            <line x1="50" y1="340" x2="50" y2="380" stroke="#6B1D00" stroke-width="1.5" transform="rotate(-5 50 360)"/>
+                            <g stroke="#F2EDE4" stroke-width="0.5" opacity="0.5" transform="rotate(-5 50 360)"><line x1="40" y1="350" x2="48" y2="350"/><line x1="40" y1="353" x2="47" y2="353"/><line x1="40" y1="356" x2="48" y2="356"/><line x1="40" y1="359" x2="46" y2="359"/><line x1="52" y1="350" x2="60" y2="350"/><line x1="52" y1="353" x2="59" y2="353"/><line x1="52" y1="356" x2="60" y2="356"/></g>
+                            <path d="M212,305 Q235,320 245,305" fill="none" stroke="#5A5048" stroke-width="16" stroke-linecap="round"/><circle cx="245" cy="303" r="8" fill="#D4BFA6"/>
+                            <line x1="245" y1="295" x2="248" y2="282" stroke="#D4BFA6" stroke-width="4" stroke-linecap="round"/><line x1="248" y1="296" x2="254" y2="284" stroke="#D4BFA6" stroke-width="4" stroke-linecap="round"/><line x1="250" y1="299" x2="258" y2="288" stroke="#D4BFA6" stroke-width="3.5" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="font-display font-bold text-lg text-ink">Виктор Сергеевич</h3>
+                        <p class="text-stamp text-xs font-semibold tracking-wider mt-1">48 ЛЕТ &bull; СТАЖ: 26 ЛЕТ</p>
+                        <p class="text-ink-light text-sm leading-relaxed mt-3">Ключевая атака: пересказ режиссёрских комментариев к&nbsp;документальным фильмам про производство гвоздей. Контратака: сравнение с&nbsp;аналогичными фильмами из&nbsp;Румынии.</p>
+                        <div class="mt-4 pt-4 border-t border-line grid grid-cols-3 gap-2 text-center">
+                            <div><p class="font-display font-bold text-lg text-ink">56</p><p class="text-dust text-[10px] tracking-wider">ФИЛЬМОВ</p></div>
+                            <div><p class="font-display font-bold text-lg text-ink">100%</p><p class="text-dust text-[10px] tracking-wider">ПОБЕД</p></div>
+                            <div><p class="font-display font-bold text-lg text-ink">0</p><p class="text-dust text-[10px] tracking-wider">ДРУЗЕЙ</p></div>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section id="quiz" class="py-24 reveal" aria-label="Тест">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6">
+            <div class="text-center mb-12">
+                <p class="text-stamp text-xs tracking-[0.3em] uppercase font-semibold mb-3">Обязательный раздел</p>
+                <h2 class="font-display font-black text-3xl sm:text-4xl text-ink">Проверь свой уровень душноты</h2>
+                <p class="text-dust text-sm mt-4 leading-relaxed">Тест состоит из&nbsp;3&nbsp;вопросов. Правильных ответов не&nbsp;существует. Как, впрочем, и&nbsp;неправильных. Но&nbsp;вы всё равно ошибётесь.</p>
+            </div>
+            <div id="quizContainer" class="bg-card border border-line rounded-sm p-6 sm:p-10">
+                <div id="quizQuestion">
+                    <p class="text-dust text-xs tracking-wider mb-2" id="quizProgress">ВОПРОС 1 ИЗ 3</p>
+                    <h3 class="font-display font-bold text-xl text-ink mb-8" id="quizQuestionText"></h3>
+                    <div class="space-y-3" id="quizOptions"></div>
+                </div>
+                <div id="quizResult" class="hidden">
+                    <div class="flex items-center gap-2 mb-4"><i class="fa-solid fa-circle-xmark text-stamp"></i><p class="text-stamp text-xs font-semibold tracking-wider">ВЫ ОТВЕТИЛИ НЕПРАВИЛЬНО</p></div>
+                    <div class="text-ink-light text-sm leading-relaxed space-y-4" id="quizResultText"></div>
+                    <button id="quizNextBtn" onclick="nextQuestion()" class="mt-8 bg-stamp text-paper px-6 py-3 text-xs font-semibold tracking-wider hover:bg-stamp-light transition-colors rounded-sm">ДАЛЕЕ</button>
+                </div>
+                <div id="quizFinal" class="hidden text-center">
+                    <div class="w-20 h-20 rounded-full bg-stamp/10 flex items-center justify-center mx-auto mb-6"><i class="fa-solid fa-file-circle-xmark text-stamp text-3xl"></i></div>
+                    <h3 class="font-display font-bold text-2xl text-ink mb-6">Результаты тестирования</h3>
+                    <div class="text-ink-light text-sm leading-relaxed text-left space-y-4" id="quizFinalText"></div>
+                    <button onclick="openModal()" class="mt-8 cta-pulse bg-stamp text-paper px-8 py-4 text-sm font-semibold tracking-wider hover:bg-stamp-light transition-colors rounded-sm">ОФОРМИТЬ ВЫЕЗДНУЮ ТОСКУ</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-24 bg-paper-dark reveal" aria-label="Отзывы">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6">
+            <div class="text-center mb-16">
+                <p class="text-stamp text-xs tracking-[0.3em] uppercase font-semibold mb-3">Протоколы клиентов</p>
+                <h2 class="font-display font-black text-3xl sm:text-4xl text-ink">Отзывы</h2>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-card border border-line rounded-sm p-8 relative">
+                    <div class="text-stamp/20 text-6xl font-display absolute top-4 right-6">&laquo;</div>
+                    <p class="text-ink-light text-sm leading-relaxed mb-6 relative z-10">Гости ушли через 9&nbsp;минут. Я&nbsp;доволен. Жена сказала, что больше не&nbsp;будет приглашать людей. Это даже лучше, чем я&nbsp;планировал.</p>
+                    <div class="border-t border-line pt-4"><p class="font-display font-bold text-ink text-sm">Олег, 45 лет</p><p class="text-dust text-xs mt-1">Именинник. Бывший.</p></div>
+                </div>
+                <div class="bg-card border border-line rounded-sm p-8 relative">
+                    <div class="text-stamp/20 text-6xl font-display absolute top-4 right-6">&laquo;</div>
+                    <p class="text-ink-light text-sm leading-relaxed mb-6 relative z-10">Тёща больше не&nbsp;приходит. Вообще. Агент доказал ей, что её&nbsp;борщ нарушает три пункта СанПиН. Она пыталась спорить, но&nbsp;у&nbsp;неё не&nbsp;было источников.</p>
+                    <div class="border-t border-line pt-4"><p class="font-display font-bold text-ink text-sm">Анатолий, 52 года</p><p class="text-dust text-xs mt-1">Зять. Победитель.</p></div>
+                </div>
+                <div class="bg-card border border-line rounded-sm p-8 relative">
+                    <div class="text-stamp/20 text-6xl font-display absolute top-4 right-6">&laquo;</div>
+                    <p class="text-ink-light text-sm leading-relaxed mb-6 relative z-10">Корпоратив прошёл... как-то. Никто не&nbsp;пел. Никто не&nbsp;танцевал. Два сотрудника уволились на&nbsp;следующий день. Считаю, задача выполнена.</p>
+                    <div class="border-t border-line pt-4"><p class="font-display font-bold text-ink text-sm">Марина, HR-менеджер</p><p class="text-dust text-xs mt-1">Осталась на&nbsp;работе. Пока.</p></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="faq" class="py-24 reveal" aria-label="FAQ">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6">
+            <div class="text-center mb-16">
+                <p class="text-stamp text-xs tracking-[0.3em] uppercase font-semibold mb-3">Раздел Clarification</p>
+                <h2 class="font-display font-black text-3xl sm:text-4xl text-ink">Часто задаваемые вопросы</h2>
+                <p class="text-dust text-sm mt-4 leading-relaxed">Или, как правильно: &laquo;Часто задаваемые&raquo; — пишется слитно, потому что...</p>
+            </div>
+            <div class="space-y-4" id="faqContainer"></div>
+        </div>
+    </section>
+
+    <section class="py-24 bg-ink text-paper relative overflow-hidden reveal" aria-label="CTA">
+        <div class="stamp absolute -top-10 -right-10 w-64 h-64 text-[10px] opacity-[0.08]" style="border-width:5px; color:#F2EDE4;"><span>СРОЧНО<br>ВЫЗВАТЬ<br>ДУШНИЛУ</span></div>
+        <div class="stamp absolute -bottom-16 -left-16 w-80 h-80 text-[12px] opacity-[0.05]" style="border-width:6px; color:#F2EDE4; transform:rotate(8deg);"><span>НЕ МЕДЛИТЕ</span></div>
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 text-center relative z-10">
+            <h2 class="font-display font-black text-3xl sm:text-5xl leading-tight mb-6">У вас скучно?<br>Мы&nbsp;сделаем ещё скучнее.</h2>
+            <p class="text-paper/60 text-base sm:text-lg leading-relaxed mb-10 max-w-xl mx-auto">Заполните заявку, и&nbsp;наш оператор перезвонит вам в&nbsp;течение 3&ndash;5 рабочих дней. Нет, подождите. Мы&nbsp;же душнила-агентство. Перезвоним, когда будем готовы.</p>
+            <button onclick="openModal()" class="cta-pulse bg-stamp text-paper px-12 py-5 font-bold text-base tracking-wider hover:bg-stamp-light transition-colors rounded-sm inline-block">ОФОРМИТЬ ВЫЕЗДНУЮ ТОСКУ</button>
+            <p class="text-paper/30 text-[11px] mt-6">Нажимая кнопку, вы соглашаетесь с тем, что вам станет хуже</p>
+        </div>
+    </section>
+
+    <footer class="py-12 border-t border-line">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-6 mb-8">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full border-2 border-stamp flex items-center justify-center"><span class="font-display font-black text-stamp text-[10px]">ПД</span></div>
+                    <span class="font-display font-bold text-ink text-sm">Профессиональный Душнила</span>
+                </div>
+                <p class="text-dust text-xs">ИП Душнилин Б.А. &bull; ОГРНИП 301234567890123 &bull; Не является юридическим лицом в&nbsp;моральном смысле</p>
+            </div>
+            <div class="disclaimer border-t border-line pt-6">
+                <p>Агентство &laquo;Профессиональный Душнила&raquo; не&nbsp;несёт ответственности за: повышение уровня тревожности у&nbsp;гостей, потерю друзей, развитие хронической скуки, нежелание приглашать кого-либо повторно, разводы (в&nbsp;том числе по&nbsp;инициативе обоих сторон), увольнение сотрудников, снижение рейтинга ресторана на&nbsp;основании &laquo;странный гость, который читал вслух состав салфеток&raquo;, нарушение санитарных норм (агент может принести свои салфетки), моральный ущерб, аморальный ущерб, безнравственный ущерб и&nbsp;прочие виды ущерба, перечисление которых заняло&nbsp;бы 47&nbsp;страниц мелким шрифтом, что, впрочем, мы&nbsp;можем организовать по&nbsp;отдельному запросу. Все совпадения с&nbsp;реальными тёщами, гостями и&nbsp;корпоративами являются абсолютно намеренными. Сайт не&nbsp;рекомендован к&nbsp;просмотру людям с&nbsp;чувством юмора. Остальным — тоже.</p>
+            </div>
+        </div>
+    </footer>
+
+    <div class="modal-overlay" id="modal" role="dialog" aria-modal="true" aria-label="Форма заявки">
+        <div class="modal-content bg-paper rounded-sm border border-line w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto">
+            <div class="p-8 sm:p-10">
+                <div class="flex items-center justify-between mb-8">
+                    <div><p class="text-stamp text-xs tracking-[0.2em] uppercase font-semibold">Форма №Д-007</p><h3 class="font-display font-bold text-xl text-ink mt-1">Заявка на выездную тоску</h3></div>
+                    <button onclick="closeModal()" class="w-10 h-10 flex items-center justify-center text-dust hover:text-stamp transition-colors" aria-label="Закрыть"><i class="fa-solid fa-xmark text-xl"></i></button>
+                </div>
+                <form id="orderForm" onsubmit="submitForm(event)" class="space-y-5">
+                    <div><label class="block text-xs text-dust tracking-wider mb-2 font-semibold">ВАШЕ ИМЯ <span class="text-stamp">*</span></label><input type="text" required class="w-full border border-line bg-paper-dark px-4 py-3 text-sm text-ink focus:border-stamp focus:outline-none transition-colors rounded-sm" placeholder="Иван Иванович"></div>
+                    <div><label class="block text-xs text-dust tracking-wider mb-2 font-semibold">ТЕЛЕФОН <span class="text-stamp">*</span></label><input type="tel" required class="w-full border border-line bg-paper-dark px-4 py-3 text-sm text-ink focus:border-stamp focus:outline-none transition-colors rounded-sm" placeholder="+7 (___) ___-__-__"></div>
+                    <div><label class="block text-xs text-dust tracking-wider mb-2 font-semibold">ПОВОД ДЛЯ ВЫЗОВА <span class="text-stamp">*</span></label><select required class="w-full border border-line bg-paper-dark px-4 py-3 text-sm text-ink focus:border-stamp focus:outline-none transition-colors rounded-sm appearance-none"><option value="">Выберите повод...</option><option value="guests">Засидевшиеся гости</option><option value="motherinlaw">Спор с тёщей</option><option value="corporate">Слишком весёлый корпоратив</option><option value="wedding">Свадьба друга (вы не были приглашены)</option><option value="date">Неудачное свидание (доработать)</option><option value="other">Другое (опишите в примечании)</option></select></div>
+                    <div><label class="block text-xs text-dust tracking-wider mb-2 font-semibold">УРОВЕНЬ ТРЕБУЕМОЙ ТОСКИ</label><input type="range" min="1" max="5" value="3" id="boredomLevel" oninput="updateBoredomLabel(this.value)"><div class="flex justify-between text-[10px] text-dust mt-2 tracking-wider"><span>Лёгкая скука</span><span id="boredomLabel" class="text-stamp font-semibold">Умеренная тоска</span><span>Экзистенциальный кризис</span></div></div>
+                    <div><label class="block text-xs text-dust tracking-wider mb-2 font-semibold">ДОПОЛНИТЕЛЬНЫЕ ПОЖЕЛАНИЯ</label><textarea rows="3" class="w-full border border-line bg-paper-dark px-4 py-3 text-sm text-ink focus:border-stamp focus:outline-none transition-colors rounded-sm resize-none" placeholder="Например: «Тёща не переносит тему налогов» или «Коллега верит в гороскопы — используйте это»"></textarea></div>
+                    <p class="text-dust text-[10px] leading-relaxed"><i class="fa-solid fa-circle-info mr-1"></i>Поля, отмеченные звёздочкой <span class="text-stamp">*</span>, обязательны для заполнения. Согласно п.&nbsp;7.3 регламента, незаполненные поля будут заполнены нами на&nbsp;наше усмотрение, что обычно хуже.</p>
+                    <button type="submit" class="w-full bg-stamp text-paper py-4 font-semibold text-sm tracking-wider hover:bg-stamp-light transition-colors rounded-sm">ОТПРАВИТЬ ЗАЯВКУ НА ТОСКУ</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast" role="alert" aria-live="polite"><p id="toastText"></p></div>
+
+    <script>
+        const quizData = [
+            { question: 'Как правильно: «в течени*» или «в течение»?', options: ['В течении', 'В течение', 'Зависит от контекста'],
+              result: '<p class="red-indent">Вы ответили неправильно. И вот почему.</p><p class="red-indent">Во-первых, вы не обратили внимания на то, что в самом вопросе пропущена буква — это уже делает невозможным корректный выбор. Во-вторых, даже если бы буква была на месте, правильный ответ зависит от части речи: «в течение» — это предлог (в течение часа), а «в течении» — существительное с предлогом (в течении реки обнаружили полезные ископаемые). В-третьих, вариант «зависит от контекста» — это ответ человека, который не знает, но хочет казаться умным.</p><p class="red-indent">Что, собственно, и ожидается от клиента нашего агентства.</p>' },
+            { question: 'Какая средняя скорость бега обыкновенного дикобраза?', options: ['Около 3 км/ч', 'Около 5 км/ч', 'Дикобразы не бегают, они ходят'],
+              result: '<p class="red-indent">Вы ответили неправильно, и вот почему.</p><p class="red-indent">Во-первых, вы не уточнили, о каком именно дикобразе идёт речь. Обыкновенный дикобраз (Hystrix cristata) и длинноиглый дикобраз (Hystrix javanica) — это разные виды с разными биометрическими показателями. Во-вторых, скорость зависит от поверхности, температуры воздуха, времени суток и мотивации дикобраза. В-третьих, утверждение «дикобразы не бегают» — это распространённый миф, возникший из-за того, что люди, утверждающие это, никогда не видели напуганного дикобраза, что, в общем-то, к счастью.</p><p class="red-indent">По данным исследования Patel et al. (2019), средняя скорость составляет 3,2 км/ч с погрешностью ±0,7 км/ч при доверительном интервале 95%. Но вы, конечно, этого не знали. И теперь знаете. Ничего хорошего в этом нет.</p>' },
+            { question: 'В каком году была подписана Варшавскай договор?', options: ['1955', '1956', '1954'],
+              result: '<p class="red-indent">Вы ответили неправильно, потому что в третьем вопросе была орфографическая ошибка, а именно: правильно писать «Варшавский» через «-ский», а не «-скай».</p><p class="red-indent">Это типичная ошибка, возникающая из-за влияния английского языка на письменную речь, что, впрочем, не является оправданием, поскольку правила русского языка не зависят от глобализации, unlike what some linguists might argue, хотя, конечно, тут можно возразить, что...</p><p class="red-indent">Кроме того, вы не заметили отсутствие кавычек вокруг названия договора, что является стилистической ошибкой согласно § 114 «Правил русской орфографии и пунктуации» 1956 года (ирония в том, что 1956 — это не год подписания договора, а год публикации правил, но вы, разумеется, не знали и этого).</p><p class="red-indent">Варшавский договор был подписан 14 мая 1955 года. Но это уже неважно.</p>' }
+        ];
+        const finalText = '<p class="red-indent"><strong>ИТОГО:</strong> Ваш уровень душноты — <strong>2,7 из 347</strong>.</p><p class="red-indent">Нам стыдно за вас. Вы не заметили ни одной ошибки, ни одной подтасовки, ни одного подвоха. Вы — обычный человек. Это позорно.</p><p class="red-indent">Вы не увидели пропущенную букву в первом вопросе. Вы не запросили уточнение вида дикобраза во втором. Вы не заметили орфографическую ошибку в заголовке третьего. При этом вы всё ещё думаете, что один из ответов был правильным. Нет. Ни один не был.</p><p class="red-indent">Позвоните нам, и мы пришлём кого-нибудь, кто научит вас внимательности. Или хотя бы испортит вам вечер. На ваш выбор. Хотя, строго говоря, выбора у вас нет. Как, впрочем, и у гостей, которых вы хотите избавиться.</p><p class="text-dust text-xs mt-6 not-italic">* Курсив в данном тексте используется исключительно для того, чтобы вы подумали, что здесь есть какая-то логика. Её нет.</p>';
+        let currentQuestion = 0;
+        function renderQuestion() {
+            const q = quizData[currentQuestion];
+            document.getElementById('quizProgress').textContent = 'ВОПРОС ' + (currentQuestion + 1) + ' ИЗ 3';
+            document.getElementById('quizQuestionText').textContent = q.question;
+            const c = document.getElementById('quizOptions'); c.innerHTML = '';
+            q.options.forEach(function(opt, i) {
+                const btn = document.createElement('button');
+                btn.className = 'quiz-option w-full text-left rounded-sm text-sm text-ink-light hover:text-ink';
+                btn.innerHTML = '<span class="text-dust mr-3 font-semibold">' + String.fromCharCode(65 + i) + ')</span> ' + opt;
+                btn.onclick = function() { selectAnswer(i); };
+                c.appendChild(btn);
+            });
+            document.getElementById('quizQuestion').classList.remove('hidden');
+            document.getElementById('quizResult').classList.add('hidden');
+            document.getElementById('quizFinal').classList.add('hidden');
+        }
+        function selectAnswer(index) {
+            document.querySelectorAll('.quiz-option').forEach(function(opt, i) {
+                opt.classList.toggle('selected', i === index);
+                opt.onclick = null; opt.style.cursor = 'default';
+            });
+            setTimeout(function() {
+                document.getElementById('quizQuestion').classList.add('hidden');
+                document.getElementById('quizResult').classList.remove('hidden');
+                document.getElementById('quizResultText').innerHTML = quizData[currentQuestion].result;
+                document.getElementById('quizNextBtn').textContent = currentQuestion >= quizData.length - 1 ? 'ПОКАЗАТЬ РЕЗУЛЬТАТ' : 'ДАЛЕЕ';
+            }, 400);
+        }
+        function nextQuestion() {
+            currentQuestion++;
+            if (currentQuestion >= quizData.length) {
+                document.getElementById('quizQuestion').classList.add('hidden');
+                document.getElementById('quizResult').classList.add('hidden');
+                document.getElementById('quizFinal').classList.remove('hidden');
+                document.getElementById('quizFinalText').innerHTML = finalText;
+            } else { renderQuestion(); }
+        }
+        renderQuestion();
+
+        const faqData = [
+            { q: 'А можно вызвать душнилу на свадьбу?', a: 'Технически да, но мы не несём ответственности за развод молодожёнов. Согласно п. 4.7 нашего договора, агент имеет право исправлять ошибки в торжественной речи, указывать на неточности в меню и задавать неудобные вопросы свидетелям. В 2023 году у нас был случай, когда агент доказал жениху, что выбранное им кольцо не соответствует ГОСТ 30696-2000. Свадьба была отменена. Жених остался доволен. Невеста — нет. Но кто тут главный клиент? Вот именно.' },
+            { q: 'Сколько стоит выезд душнилы?', a: 'Базовый тариф — 3 000 ₽/час. Премиум-тариф — 5 500 ₽/час (агент ещё и поправляет осанку гостей). VIP-тариф — 12 000 ₽/час (агент приезжает с проектором и презентацией на 147 слайдов). Скидка 10% при заказе от 3 часов — потому что после 3 часов никто не выдерживает и скидка уже не нужна. Оплата наличными, картой или натурой (борщом, но только по ГОСТу).' },
+            { q: 'А если гости начнут спорить с вашим агентом?', a: 'Это технически невозможно. Наши агенты проходят 6-месячную подготовку в Институте Придирчивости им. В.И. Дальнего. За всю историю агентства ни один гость не выиграл спор. Рекорд — агент убедил гостя, что тот неправильно дышит. Гость был госпитализирован с гипервентиляцией, но технически — проиграл. Мы посылали ему открытку. С исправленной пунктуацией.' },
+            { q: 'Можно ли выбрать специализацию душнилы?', a: 'Конечно. У нас есть душнилы-лингвисты, душнилы-историки, душнилы-технари и душнилы-универсалы. Последние — самые страшные: они могут перейти от темы орфографии к теме теплопроводности кирпича за один абзац. При заполнении заявки укажите желаемую специализацию, и мы подберём оптимального мучителя. Если указанной специализации нет — мы добавим её в каталог и выставим счёт за разработку.' },
+            { q: 'Что если душнила мне понравится и я захочу с ним дружить?', a: 'Согласно п. 9.2 нашего договора, дружба с агентом после оказания услуг запрещена. Агент может оставить вам визитку, но на ней будет опечатка. Это проверка. Если вы напишете нам reclamaciyu об ошибке — вы пройдёте собеседование. Если не заметите — вам откажут. Всё честно.' }
+        ];
+        const faqC = document.getElementById('faqContainer');
+        faqData.forEach(function(item) {
+            const el = document.createElement('div');
+            el.className = 'faq-item bg-card border border-line rounded-sm overflow-hidden';
+            el.innerHTML = '<button class="w-full text-left px-6 py-5 flex items-center justify-between gap-4" onclick="toggleFaq(this)" aria-expanded="false"><span class="font-display font-bold text-ink text-sm sm:text-base">' + item.q + '</span><span class="faq-icon text-stamp text-xl flex-shrink-0"><i class="fa-solid fa-plus"></i></span></button><div class="faq-answer px-6"><p class="text-ink-light text-sm leading-relaxed pb-5">' + item.a + '</p></div>';
+            faqC.appendChild(el);
+        });
+        function toggleFaq(btn) {
+            const item = btn.closest('.faq-item'), answer = item.querySelector('.faq-answer'), isOpen = item.classList.contains('open');
+            document.querySelectorAll('.faq-item').forEach(function(fi) { fi.classList.remove('open'); fi.querySelector('.faq-answer').classList.remove('open'); fi.querySelector('button').setAttribute('aria-expanded', 'false'); });
+            if (!isOpen) { item.classList.add('open'); answer.classList.add('open'); btn.setAttribute('aria-expanded', 'true'); }
+        }
+        function openModal() { document.getElementById('modal').classList.add('active'); document.body.classList.add('no-scroll'); }
+        function closeModal() { document.getElementById('modal').classList.remove('active'); document.body.classList.remove('no-scroll'); }
+        document.getElementById('modal').addEventListener('click', function(e) { if (e.target === e.currentTarget) closeModal(); });
+        document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeModal(); });
+        var boredomLabels = ['Лёгкая скука', 'Заметная тоска', 'Умеренная тоска', 'Глубокая унылость', 'Экзистенциальный кризис'];
+        function updateBoredomLabel(val) { document.getElementById('boredomLabel').textContent = boredomLabels[val - 1]; }
+        function submitForm(e) { e.preventDefault(); closeModal(); showToast('Заявка принята. Ожидайте звонка в течение 3–5 рабочих дней. Хотя, если честно, наш менеджер может сначала прочитать вам лекцию о правильном заполнении форм — у вас, кстати, не указан ИНН в примечании. Хорошего вам дня. Нет, подождите — правильно сказать: «Хорошего вам дня», потому что...'); }
+        var toastTimeout;
+        function showToast(text) { var t = document.getElementById('toast'); document.getElementById('toastText').textContent = text; t.classList.add('visible'); clearTimeout(toastTimeout); toastTimeout = setTimeout(function() { t.classList.remove('visible'); }, 10000); }
+        function animateCounter(el) { var target = parseInt(el.dataset.target), duration = 2000, start = performance.now(); function update(now) { var elapsed = now - start, progress = Math.min(elapsed / duration, 1), ease = 1 - Math.pow(1 - progress, 3); el.textContent = Math.round(target * ease).toLocaleString('ru-RU'); if (progress < 1) requestAnimationFrame(update); } requestAnimationFrame(update); }
+        var observer = new IntersectionObserver(function(entries) { entries.forEach(function(entry) { if (entry.isIntersecting) { entry.target.classList.add('visible'); entry.target.querySelectorAll('.counter-num').forEach(function(c) { animateCounter(c); }); observer.unobserve(entry.target); } }); }, { threshold: 0.15 });
+        document.querySelectorAll('.reveal').forEach(function(el) { observer.observe(el); });
+        var heroSection = document.querySelector('header');
+        var stampTexts = ['ОДОБРЕНО', 'ПРОВЕРЕНО', 'ЗАТВЕРЖДЕНО', 'СОГЛАСОВАНО', 'НЕ СОГЛАСОВАНО', 'НА ДОРАБОТКУ', 'УТВЕРЖДАЮ', 'К ИСПОЛНЕНИЮ'];
+        heroSection.addEventListener('click', function(e) {
+            if (e.target.closest('button') || e.target.closest('a')) return;
+            var s = document.createElement('div'); s.className = 'stamp stamp-animated';
+            s.style.position = 'absolute'; s.style.left = (e.clientX - heroSection.getBoundingClientRect().left - 60) + 'px';
+            s.style.top = (e.clientY - heroSection.getBoundingClientRect().top - 60) + 'px';
+            s.style.width = '120px'; s.style.height = '120px'; s.style.zIndex = '10';
+            s.textContent = stampTexts[Math.floor(Math.random() * stampTexts.length)];
+            heroSection.style.position = 'relative'; heroSection.appendChild(s);
+            setTimeout(function() { s.style.transition = 'opacity 0.5s ease'; s.style.opacity = '0'; setTimeout(function() { s.remove(); }, 500); }, 2000);
+        });
+    </script>
+</body>
+</html>
